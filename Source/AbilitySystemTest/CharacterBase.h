@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemInterface.h"
+#include "Abilities/GameplayAbility.h"
 #include "CharacterBase.generated.h"
 
 UCLASS()
-class ABILITYSYSTEMTEST_API ACharacterBase : public ACharacter
+class ABILITYSYSTEMTEST_API ACharacterBase : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -26,4 +29,11 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "CharacterBase")
+	UAbilitySystemComponent* AbilitySystemComp;
+
+	UFUNCTION(BlueprintCallable, Category = "CharacterBase")
+	void AquireAbility(TSubclassOf<UGameplayAbility> AbilityToAquire);
 };
