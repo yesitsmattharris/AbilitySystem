@@ -9,6 +9,8 @@
 #include "Abilities/GameplayAbility.h"
 #include "CharacterBase.generated.h"
 
+class UAttributeSetBase;
+
 UCLASS()
 class ABILITYSYSTEMTEST_API ACharacterBase : public ACharacter, public IAbilitySystemInterface
 {
@@ -33,6 +35,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "CharacterBase")
 	UAbilitySystemComponent* AbilitySystemComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "CharacterBase")
+	UAttributeSetBase* AttributeSetBaseComp;
 
 	UFUNCTION(BlueprintCallable, Category = "CharacterBase")
 	void AquireAbility(TSubclassOf<UGameplayAbility> AbilityToAquire);
