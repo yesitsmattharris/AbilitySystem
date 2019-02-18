@@ -10,6 +10,7 @@ ACharacterBase::ACharacterBase()
 	PrimaryActorTick.bCanEverTick = true;
 	AbilitySystemComp = CreateDefaultSubobject<UAbilitySystemComponent>("AbilitySystem");
 	AttributeSetBaseComp = CreateDefaultSubobject<UAttributeSetBase>("AttributeSetBaseComp");
+	bIsDead = false;
 }
 
 // Called when the game starts or when spawned
@@ -52,5 +53,10 @@ void ACharacterBase::AquireAbility(TSubclassOf<UGameplayAbility> AbilityToAquire
 
 void ACharacterBase::OnHealthChanged(float Health, float MaxHealth)
 {
+	if (Health <= 0.f && !bIsDead)
+	{
+		bIsDead = true;
+		BP_Die();
+	}
 	BP_OnHealthChanged(Health, MaxHealth);
 }
