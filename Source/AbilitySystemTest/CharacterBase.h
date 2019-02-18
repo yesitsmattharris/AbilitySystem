@@ -42,6 +42,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "CharacterBase")
 	void AquireAbility(TSubclassOf<UGameplayAbility> AbilityToAquire);
 
+	UFUNCTION(BlueprintCallable, Category = "CharacterBase")
+	bool IsOtherHostile(ACharacterBase* Other);
+
 	UFUNCTION(BlueprintImplementableEvent, Category = "CharacterBase", meta = (DisplayName = "OnHealthChanged"))
 	void BP_OnHealthChanged(float Health, float MaxHealth);
 
@@ -51,6 +54,13 @@ public:
 	UFUNCTION()
 	void OnHealthChanged(float Health, float MaxHealth);
 
+	uint8 GetTeamID() const;
+
 protected:
 	bool bIsDead;
+	uint8 TeamID;
+
+	void AutoDetermineTeamIDByControllerType();
+
+	void Dead();
 };
