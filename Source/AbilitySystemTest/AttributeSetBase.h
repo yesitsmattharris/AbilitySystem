@@ -19,4 +19,6 @@ public:
 	FGameplayAttributeData Health;
 
 	UAttributeSetBase();
+
+	void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData &Data) override;
 };
