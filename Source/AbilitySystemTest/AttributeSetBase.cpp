@@ -29,7 +29,7 @@ void UAttributeSetBase::PostGameplayEffectExecute(const struct FGameplayEffectMo
 	{
 		Mana.SetCurrentValue(FMath::Clamp(Mana.GetCurrentValue(), 0.f, MaxMana.GetCurrentValue()));
 		Mana.SetBaseValue(FMath::Clamp(Mana.GetBaseValue(), 0.f, MaxMana.GetCurrentValue()));
-		OnHealthChange.Broadcast(Mana.GetCurrentValue(), MaxMana.GetCurrentValue());
+		OnManaChange.Broadcast(Mana.GetCurrentValue(), MaxMana.GetCurrentValue());
 	}
 
 	// Check if attribute that has been changed by GE is Strength
