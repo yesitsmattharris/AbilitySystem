@@ -3,6 +3,7 @@
 #include "AttributeSetBase.h"
 #include "GameplayEffect.h"
 #include "GameplayEffectExtension.h"
+#include "CharacterBase.h"
 
 UAttributeSetBase::UAttributeSetBase()
 	:Health(200.0f),
@@ -22,6 +23,22 @@ void UAttributeSetBase::PostGameplayEffectExecute(const struct FGameplayEffectMo
 		Health.SetCurrentValue(FMath::Clamp(Health.GetCurrentValue(), 0.f, MaxHealth.GetCurrentValue()));
 		Health.SetBaseValue(FMath::Clamp(Health.GetBaseValue(), 0.f, MaxHealth.GetCurrentValue()));
 		OnHealthChange.Broadcast(Health.GetCurrentValue(), MaxHealth.GetCurrentValue());
+
+		ACharacterBase* CharacterOwner = Cast<ACharacterBase>(GetOwningActor());
+		if (Health.GetCurrentValue() == MaxHealth.GetCurrentValue())
+		{
+			if (CharacterOwner)
+			{
+				CharacterOwner->AddGameplayTag(CharacterOwner->FullHealthTag);
+			}
+		}
+		else
+		{
+			if (CharacterOwner)
+			{
+				CharacterOwner->RemoveGameplayTag(CharacterOwner->FullHealthTag);
+			}
+		}
 	}
 
 	// Check if attribute that has been changed by GE is Mana

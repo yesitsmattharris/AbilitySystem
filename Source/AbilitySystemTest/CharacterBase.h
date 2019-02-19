@@ -27,42 +27,38 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "CharacterBase")
 	UAbilitySystemComponent* AbilitySystemComp;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "CharacterBase")
 	UAttributeSetBase* AttributeSetBaseComp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CharacterBase")
+	FGameplayTag FullHealthTag;
 
 	UFUNCTION(BlueprintCallable, Category = "CharacterBase")
 	void AquireAbility(TSubclassOf<UGameplayAbility> AbilityToAquire);
-
 	UFUNCTION(BlueprintCallable, Category = "CharacterBase")
 	bool IsOtherHostile(ACharacterBase* Other);
-
+	UFUNCTION(BlueprintCallable, Category = "CharacterBase")
+	void AddGameplayTag(FGameplayTag& TagToAdd);
+	UFUNCTION(BlueprintCallable, Category = "CharacterBase")
+	void RemoveGameplayTag(FGameplayTag& TagToRemove);
 	UFUNCTION(BlueprintImplementableEvent, Category = "CharacterBase", meta = (DisplayName = "Die"))
 	void BP_Die();
 
 	UFUNCTION()
 	void OnHealthChanged(float Health, float MaxHealth);
-
 	UFUNCTION(BlueprintImplementableEvent, Category = "CharacterBase", meta = (DisplayName = "OnHealthChanged"))
 	void BP_OnHealthChanged(float Health, float MaxHealth);
-
 	UFUNCTION()
 	void OnManaChanged(float Mana, float MaxMana);
-
 	UFUNCTION(BlueprintImplementableEvent, Category = "CharacterBase", meta = (DisplayName = "OnManaChanged"))
 	void BP_OnManaChanged(float Mana, float MaxMana);
-
 	UFUNCTION()
 	void OnStrengthChanged(float Strength, float MaxStrength);
-
 	UFUNCTION(BlueprintImplementableEvent, Category = "CharacterBase", meta = (DisplayName = "OnStrengthChanged"))
 	void BP_OnStrengthChanged(float Strength, float MaxStrength);
 
@@ -71,8 +67,6 @@ public:
 protected:
 	bool bIsDead;
 	uint8 TeamID;
-
 	void AutoDetermineTeamIDByControllerType();
-
 	void Dead();
 };
