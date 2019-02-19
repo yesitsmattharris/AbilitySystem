@@ -60,6 +60,7 @@ void ACharacterBase::AquireAbility(TSubclassOf<UGameplayAbility> AbilityToAquire
 
 bool ACharacterBase::IsOtherHostile(ACharacterBase* Other)
 {
+	// TODO fix as every target takes damage as long as one is of other team
 	return TeamID != Other->GetTeamID();
 }
 
@@ -68,6 +69,12 @@ void ACharacterBase::AddGameplayTag(FGameplayTag& TagToAdd)
 	GetAbilitySystemComponent()->AddLooseGameplayTag(TagToAdd);
 	// Never allow more than 1
 	GetAbilitySystemComponent()->SetTagMapCount(TagToAdd, 1);
+}
+
+void ACharacterBase::HitStun(float StunDuration)
+{
+	DisableInputControl();
+	GetWorldTimerManager().SetTimer(StunTimeHandle, this, &ACharacterBase::EnableInputControl, StunDuration, false);
 }
 
 void ACharacterBase::RemoveGameplayTag(FGameplayTag& TagToRemove)
@@ -111,6 +118,11 @@ void ACharacterBase::AutoDetermineTeamIDByControllerType()
 
 void ACharacterBase::Dead()
 {
+	DisableInputControl();
+}
+
+void ACharacterBase::DisableInputControl()
+{
 	APlayerController* PC = Cast<APlayerController>(GetController());
 	if (PC)
 	{
@@ -120,5 +132,22 @@ void ACharacterBase::Dead()
 	if (AIC)
 	{
 		AIC->GetBrainComponent()->StopLogic("Dead");
+	}
+}
+
+void ACharacterBase::EnableInputControl()
+{
+	if (!bIsDead)
+	{
+		APlayerController* PC = Cast<APlayerController>(GetController());
+		if (PC)
+		{
+			PC->EnableInput(PC);
+		}
+		AAIController* AIC = Cast<AAIController>(GetController());
+		if (AIC)
+		{
+			AIC->GetBrainComponent()->RestartLogic();
+		}
 	}
 }
