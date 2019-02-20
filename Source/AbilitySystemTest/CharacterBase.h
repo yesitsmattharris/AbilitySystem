@@ -10,6 +10,7 @@
 #include "CharacterBase.generated.h"
 
 class UAttributeSetBase;
+class UGameplayAbilityBase;
 
 UCLASS()
 class ABILITYSYSTEMTEST_API ACharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -40,6 +41,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "CharacterBase")
 	void AquireAbility(TSubclassOf<UGameplayAbility> AbilityToAquire);
+	UFUNCTION(BlueprintCallable, Category = "CharacterBase")
+	void AquireAbilities(TArray<TSubclassOf<UGameplayAbility>> AbilityToAquire);
 	UFUNCTION(BlueprintCallable, Category = "CharacterBase")
 	bool IsOtherHostile(ACharacterBase* Other);
 	UFUNCTION(BlueprintCallable, Category = "CharacterBase")
@@ -73,5 +76,6 @@ protected:
 	void Dead();
 	void DisableInputControl();
 	void EnableInputControl();
+	void AddAbilityToUI(TSubclassOf<UGameplayAbilityBase> AbilityToAdd);
 	FTimerHandle StunTimeHandle;
 };
