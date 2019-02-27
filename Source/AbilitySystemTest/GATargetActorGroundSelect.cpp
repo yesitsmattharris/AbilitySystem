@@ -12,6 +12,46 @@ void AGATargetActorGroundSelect::StartTargeting(UGameplayAbility* Ability)
 
 void AGATargetActorGroundSelect::ConfirmTargetingAndContinue()
 {
+	FVector ViewLocation;
+	bGetPlayerLookingPoint(ViewLocation);
+
+	TArray<FOverlapResult> OutOverlaps;
+	TArray<TWeakObjectPtr<AActor>> OverlappedActors;
+	bool bTraceComplex = false;
+
+	FCollisionQueryParams CollisionQueryParams;
+	CollisionQueryParams.bTraceComplex = bTraceComplex;
+	CollisionQueryParams.bReturnPhysicalMaterial = false;
+	APawn* MasterPawn = MasterPC->GetPawn();
+	if (MasterPawn)
+	{
+		CollisionQueryParams.AddIgnoredActor(MasterPawn->GetUniqueID());
+	}
+
+	bool bTryOverlap = GetWorld()->OverlapMultiByObjectType(
+		OutOverlaps,
+		ViewLocation,
+		FQuat::Identity,
+		FCollisionObjectQueryParams(ECC_Pawn),
+		FCollisionShape::MakeSphere(Radius),
+		CollisionQueryParams
+	);
+
+	if (bTryOverlap)
+	{
+		for (int32 i = 0; i < OutOverlaps.Num(); i++)
+		{
+			APawn* PawnOverlapped = Cast<APawn>(OutOverlaps[i].GetActor());
+			if (PawnOverlapped && !OverlappedActors.Contains(PawnOverlapped))
+			{
+				OverlappedActors.Add(PawnOverlapped);
+			}
+		}
+	}
+}
+
+bool AGATargetActorGroundSelect::bGetPlayerLookingPoint(OUT FVector& OutViewPoint)
+{
 	FVector OutViewPoint;
 	FRotator OutViewRotation;
 	MasterPC->GetPlayerViewPoint(OutViewPoint, OutViewRotation);
@@ -19,7 +59,7 @@ void AGATargetActorGroundSelect::ConfirmTargetingAndContinue()
 	FHitResult OutHitResult;
 	FCollisionQueryParams QueryParams;
 	QueryParams.bTraceComplex = true;
-	
+
 	APawn* MasterPawn = MasterPC->GetPawn();
 	if (MasterPawn)
 	{
@@ -27,9 +67,15 @@ void AGATargetActorGroundSelect::ConfirmTargetingAndContinue()
 	}
 
 	FVector LookAtPoint = FVector();
-	bool TryTrace = GetWorld()->LineTraceSingleByChannel(OutHitResult, OutViewPoint, OutViewPoint + OutViewRotation.Vector()*10000.0f, ECC_Visibility, QueryParams);
-	if (TryTrace)
+	bool bTryTrace = GetWorld()->LineTraceSingleByChannel(OutHitResult, OutViewPoint, OutViewPoint + OutViewRotation.Vector()*10000.0f, ECC_Visibility, QueryParams);
+	if (bTryTrace)
 	{
-		LookAtPoint = OutHitResult.ImpactPoint;
+		OutViewPoint = OutHitResult.ImpactPoint;
 	}
+	else
+	{
+		OutViewPoint = FVector();
+	}
+
+	return bTryTrace;
 }

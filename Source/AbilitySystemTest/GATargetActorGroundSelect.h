@@ -17,4 +17,10 @@ class ABILITYSYSTEMTEST_API AGATargetActorGroundSelect : public AGameplayAbility
 public:
 	virtual void StartTargeting(UGameplayAbility* Ability) override;
 	virtual void ConfirmTargetingAndContinue() override;
+
+	UFUNCTION(BlueprintCallable, Category = "GroundSelect")
+	bool bGetPlayerLookingPoint(OUT FVector& OutViewPoint);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GroundSelect")
+	float Radius;
 };
