@@ -3,6 +3,12 @@
 #include "GATargetActorGroundSelect.h"
 #include "Abilities/GameplayAbility.h"
 #include "GameFramework/PlayerController.h"
+#include "DrawDebugHelpers.h"
+
+AGATargetActorGroundSelect::AGATargetActorGroundSelect()
+{
+	PrimaryActorTick.bCanEverTick = true;
+}
 
 void AGATargetActorGroundSelect::StartTargeting(UGameplayAbility* Ability)
 {
@@ -48,9 +54,27 @@ void AGATargetActorGroundSelect::ConfirmTargetingAndContinue()
 			}
 		}
 	}
+
+	if (OverlappedActors.Num() > 0)
+	{
+		FGameplayAbilityTargetDataHandle TargetData = StartLocation.MakeTargetDataHandleFromActors(OverlappedActors);
+		TargetDataReadyDelegate.Broadcast(TargetData);
+	}
+	else
+	{
+		TargetDataReadyDelegate.Broadcast(FGameplayAbilityTargetDataHandle());
+	}
 }
 
-bool AGATargetActorGroundSelect::bGetPlayerLookingPoint(OUT FVector& OutViewPoint)
+void AGATargetActorGroundSelect::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	FVector OutLookPoint;
+	bGetPlayerLookingPoint(OutLookPoint);
+	DrawDebugSphere(GetWorld(), OutLookPoint, Radius, 32, FColor::Red, false, -1.0f, 0, 5.0f);
+}
+
+bool AGATargetActorGroundSelect::bGetPlayerLookingPoint(FVector& ViewPoint)
 {
 	FVector OutViewPoint;
 	FRotator OutViewRotation;
@@ -70,11 +94,11 @@ bool AGATargetActorGroundSelect::bGetPlayerLookingPoint(OUT FVector& OutViewPoin
 	bool bTryTrace = GetWorld()->LineTraceSingleByChannel(OutHitResult, OutViewPoint, OutViewPoint + OutViewRotation.Vector()*10000.0f, ECC_Visibility, QueryParams);
 	if (bTryTrace)
 	{
-		OutViewPoint = OutHitResult.ImpactPoint;
+		ViewPoint = OutHitResult.ImpactPoint;
 	}
 	else
 	{
-		OutViewPoint = FVector();
+		ViewPoint = FVector();
 	}
 
 	return bTryTrace;
