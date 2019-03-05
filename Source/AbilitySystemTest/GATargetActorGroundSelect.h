@@ -6,6 +6,9 @@
 #include "Abilities/GameplayAbilityTargetActor.h"
 #include "GATargetActorGroundSelect.generated.h"
 
+class UDecalComponent;
+class USceneComponent;
+
 /**
  * 
  */
@@ -26,4 +29,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true), Category = "GroundSelect")
 	float Radius;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "GroundBlast")
+	UDecalComponent* Decal;
+
+	USceneComponent* RootComp;
 };
