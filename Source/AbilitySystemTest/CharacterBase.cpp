@@ -105,6 +105,14 @@ uint8 ACharacterBase::GetTeamID() const
 	return TeamID;
 }
 
+void ACharacterBase::ApplyGESpecHandleToTargetDataSpecsHandle(const FGameplayEffectSpecHandle & GESpecHandle, const FGameplayAbilityTargetDataHandle & TargetDataHandle)
+{
+	for (TSharedPtr<FGameplayAbilityTargetData> Data : TargetDataHandle.Data)
+	{
+		Data->ApplyGameplayEffectSpec(*GESpecHandle.Data.Get());
+	}
+}
+
 void ACharacterBase::OnHealthChanged(float Health, float MaxHealth)
 {
 	if (Health <= 0.f && !bIsDead)

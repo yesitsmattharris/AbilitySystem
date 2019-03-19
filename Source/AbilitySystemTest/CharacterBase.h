@@ -53,6 +53,8 @@ public:
 	void RemoveGameplayTag(FGameplayTag& TagToRemove);
 	UFUNCTION(BlueprintImplementableEvent, Category = "CharacterBase", meta = (DisplayName = "Die"))
 	void BP_Die();
+	UFUNCTION(BlueprintCallable, Category = "CharacterBase")
+	void ApplyGESpecHandleToTargetDataSpecsHandle(const FGameplayEffectSpecHandle& GESpecHandle, const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 
 	UFUNCTION()
 	void OnHealthChanged(float Health, float MaxHealth);
